@@ -10,9 +10,9 @@ namespace ProjetoIA.GOAP
         [SerializeField] protected NavMeshAgent navAgent;
 
         protected GoapFSM fsm;
-        //protected GoapFSMState idle;
-        //protected GoapFSMState movingTo;
-        //protected GoapFSMState performingAction;
+        protected IGoapFSMState idle;
+        protected IGoapFSMState movingTo;
+        protected IGoapFSMState performingAction;
 
         protected Queue<GoapAction> currentPlan;
         protected List<GoapAction> availableActions;
