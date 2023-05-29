@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Security;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,18 +10,26 @@ public class AlertMeter : MonoBehaviour
     [SerializeField]
     private float fillSpeed = 0.5f;
 
-    private GameObject alertMeterNormal;
-    private GameObject alertMeterActivated;
-    private GameObject aMNBase;
-    private GameObject aMNFill;
-    private GameObject aMABase;
-    private GameObject aMAFill;
+    private GameObject alertMeter;
+    private RectTransform alertMeterRect;
 
-    private Image aMNFillImage;
-    private Image aMAFillImage;
+    private GameObject radioBase;
 
-    private float aMNFillAmount = 0;
-    private float aMAFillAmount = 0;
+    private GameObject radioFill;
+
+    private GameObject radioShine;
+    private RectTransform radioShineRect;
+
+    private GameObject radioShadow;
+    private CanvasGroup radioShadowCGroup;
+
+    private Image fillImage;
+
+    [SerializeField]
+    private Sprite[] fillSprites; // 0 é normal, 1 é meio termo e 3 é alerta máximo
+    private int fillSpriteID = 0;
+
+    private float fillAmount = 0;
 
     private enum AlertState
     {
@@ -33,17 +42,23 @@ public class AlertMeter : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        alertMeterNormal = GetChildGameObject(gameObject, "AlertMeterNormal");
-        alertMeterActivated = GetChildGameObject(gameObject, "AlertMeterActivated");
-        aMNBase = GetChildGameObject(gameObject, "AMNBase");
-        aMNFill = GetChildGameObject(gameObject, "AMNFill");
-        aMABase = GetChildGameObject(gameObject, "AMABase");
-        aMAFill = GetChildGameObject(gameObject, "AMAFill");
+        alertMeter = GetChildGameObject(gameObject, "AlertMeter");
+        alertMeterRect = alertMeter.GetComponent<RectTransform>();
 
-        aMNFillImage = aMNFill.GetComponent<Image>();
-        aMAFillImage = aMAFill.GetComponent<Image>();
+        radioBase = GetChildGameObject(gameObject, "Base");
+        radioFill = GetChildGameObject(gameObject, "Fill");
+
+        radioShine = GetChildGameObject(gameObject, "Shine");
+        radioShineRect = radioShine.GetComponent<RectTransform>();
+
+        radioShadow = GetChildGameObject(gameObject, "Shadow");
+        radioShadowCGroup = radioShadow.GetComponent<CanvasGroup>();
+
+        fillImage = radioFill.GetComponent<Image>();
 
         currentState = AlertState.Normal;
+
+        radioShine.SetActive(false);
     }
 
     // Update is called once per frame
@@ -52,40 +67,52 @@ public class AlertMeter : MonoBehaviour
         // debug
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            aMNFillAmount += 0.1f;
+            fillAmount += 0.1f;
         }
         if (Input.GetKeyDown(KeyCode.X))
         {
-            aMNFillAmount -= 0.1f;
-        }
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            aMAFillAmount += 0.1f;
-        }
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            aMAFillAmount -= 0.1f;
+            fillAmount -= 0.1f;
         }
 
-        if (currentState == AlertState.Normal)
+        // Altera a imagem do fill dependendo do quão cheio está
+        if (fillAmount >= 0.656f && fillSpriteID != 2)
         {
-            //aMNFillAmount = (verifica qual inimigo tem o maior alerta)
+            fillSpriteID = 2;
+            fillImage.sprite = fillSprites[fillSpriteID];
+        } 
+        else if (fillAmount >= 0.31f && fillAmount < 0.656f && fillSpriteID != 1)
+        {
+            fillSpriteID = 1;
+            fillImage.sprite = fillSprites[fillSpriteID];
+        } 
+        else if (fillAmount < 0.31f && fillSpriteID != 0)
+        {
+            fillSpriteID = 0;
+            fillImage.sprite = fillSprites[fillSpriteID];
+        }
 
-            // Setar o valor de destino do lerp para o maior valor de alerta de qualquer inimigo do mapa
-            aMNFillImage.fillAmount = Mathf.Lerp(aMNFillImage.fillAmount, aMNFillAmount, fillSpeed);
+        if (fillAmount >= 0.656f)
+        {
+            alertMeterRect.localRotation = Quaternion.Euler(new Vector3(alertMeterRect.localRotation.x, alertMeterRect.localRotation.y, Random.Range(-1, 1)));
+        }
+
+        if (fillAmount >= 0.656f)
+        {
+            radioShadowCGroup.alpha = Mathf.Lerp(radioShadowCGroup.alpha, 1, 2f * Time.deltaTime);
         } else
         {
-            //aMAFillAmount = (verifica qual inimigo tem o maior alerta)
-
-            // Setar o valor de destino do lerp para o maior valor de alerta de qualquer inimigo do mapa
-            aMAFillImage.fillAmount = Mathf.Lerp(aMAFillImage.fillAmount, aMAFillAmount, fillSpeed);
+            radioShadowCGroup.alpha = Mathf.Lerp(radioShadowCGroup.alpha, 0, 2f * Time.deltaTime);
         }
-        
-        if (currentState == AlertState.Normal && aMNFillAmount >= 1)
+
+        // Manipula a quantidade de fill
+        fillImage.fillAmount = Mathf.Lerp(fillImage.fillAmount, fillAmount, fillSpeed);
+
+        // Executa a ação de trocar de estados
+        if (currentState == AlertState.Normal && fillAmount >= 1)
         {
             ChangeAlertState(AlertState.Activated);
         }
-        if (currentState == AlertState.Activated && aMAFillAmount <= 0)
+        if (currentState == AlertState.Activated && fillAmount <= 0)
         {
             ChangeAlertState(AlertState.Normal);
         }
@@ -96,15 +123,53 @@ public class AlertMeter : MonoBehaviour
         currentState = alertState;
         if (alertState == AlertState.Normal)
         {
-            aMNFillAmount = 0;
-            alertMeterActivated.SetActive(false);
-            alertMeterNormal.SetActive(true);
+            fillAmount = 0;
         }
         else
         {
-            aMAFillAmount = 1;
-            alertMeterActivated.SetActive(true);
-            alertMeterNormal.SetActive(false);
+            StartCoroutine(ShakeRadio());
+            StartCoroutine(InflateRadio());
+        }
+    }
+
+    private IEnumerator ShakeRadio()
+    {
+        while (currentState == AlertState.Activated)
+        {
+            radioShineRect.localRotation *= Quaternion.Euler(Vector3.forward * 600 * Time.deltaTime);
+            alertMeterRect.localRotation = Quaternion.Euler(new Vector3(alertMeterRect.localRotation.x, alertMeterRect.localRotation.y, Random.Range(-4, 4)));
+            yield return null;
+        }
+        radioShineRect.localRotation = Quaternion.Euler(new Vector3(radioShineRect.localRotation.x, radioShineRect.localRotation.y, 0));
+        alertMeterRect.localRotation = Quaternion.Euler(new Vector3(radioShineRect.localRotation.x, radioShineRect.localRotation.y, 0));
+        radioShine.SetActive(false);
+    }
+
+    private IEnumerator InflateRadio()
+    {
+        // Define o tempo que será tomado em cada etapa da animação
+        float timeStart = 0.1f;
+        float timeHold = 0f;
+        float timeEnd = 0.2f;
+        Vector3 initScale = alertMeterRect.localScale;
+
+        for (float i = 0; i < timeStart; i += 0)
+        {
+            float scale = i / timeStart ;
+            scale = scale * scale * scale;
+            alertMeterRect.localScale = initScale * Mathf.Lerp(1,1.3f,scale);
+            i += Time.deltaTime;
+            yield return null;
+        }
+        radioShine.SetActive(true);
+        yield return new WaitForSeconds(timeHold);
+        for (float i = timeEnd; i > 0; i += 0)
+        {
+            float scale = i / timeEnd;
+            scale = scale * scale * scale;
+            alertMeterRect.localScale = initScale * Mathf.Lerp(1, 1.3f, scale);
+            i -= Time.deltaTime;
+            yield return null;
         }
     }
 
@@ -116,5 +181,4 @@ public class AlertMeter : MonoBehaviour
         return null;
     }
 
-    
 }
