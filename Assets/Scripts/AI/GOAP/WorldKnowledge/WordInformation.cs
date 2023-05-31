@@ -18,23 +18,31 @@ namespace ProjetoIA.GOAP
         Attacking,
         Retreating
     }
-    public enum WorldInfo
+    public enum eWorldInfo
     {
-        //Player:
-        PlayerDistance = 0,         //float
+        //Player
+        PlayerHealthStatus,         //enum (PlayerHealthStatus)
+        //Enemies:
+        EnemyAlertStatus           //enum (EnemyAlertStatus)
+    }
+    public enum bWorldInfo
+    {
+        //Player
         PlayerAlive,                //bool
         PlayerVisible,              //bool
-        PlayerHealthStatus,         //enum (PlayerHealthStatus)
         Camouflaged,                //bool
         //Equipment:
         RangedWeaponAvailable,      //bool
         GrenageAvailable,           //bool
         DistractionAvailable,       //bool
-        //Enemies:
-        EnemyAlertStatus,           //enum (EnemyAlertStatus)
         //Common:
         Crouching,                  //bool
         IsFiring,                   //bool
 
+    }
+    public enum fWorldInfo
+    {
+        //Player:
+        PlayerDistance = 0,         //float
     }
 }

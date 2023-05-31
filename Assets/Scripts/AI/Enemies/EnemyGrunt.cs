@@ -6,5 +6,6 @@ namespace ProjetoIA
 {
     public class EnemyGrunt : EnemyBase
     {
+        
     }
 }
