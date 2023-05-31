@@ -6,22 +6,36 @@ namespace ProjetoIA.GOAP
 {
     public abstract class GoapAIKnowledge
     {
-        protected Dictionary<WorldInfo, object> knowledge;
+        private WorldKnowledge worldKnowledge;
 
         public GoapAIKnowledge()
         {
-            knowledge = new Dictionary<WorldInfo, object>();
+            worldKnowledge = new WorldKnowledge();
         }
-        public IReadOnlyDictionary<WorldInfo, object> GetWorldKnowledge()
+        public WorldKnowledge GetWorldKnowledge()
         {
-            return knowledge;
+            return worldKnowledge;
         }
-        public void UpdateWorldKnowledge(WorldInfo worldInfo, object value)
+        public void UpdateWorldKnowledge(bWorldInfo bWorldInfo, bool value)
         {
-            if(knowledge.ContainsKey(worldInfo))
-                knowledge[worldInfo] = value;
-            else 
-                knowledge.Add(worldInfo, value);
+            if(worldKnowledge.ContainsKey(bWorldInfo))
+                worldKnowledge[bWorldInfo] = value;
+            else
+                worldKnowledge.Add(bWorldInfo, value);
+        }
+        public void UpdateWorldKnowledge(fWorldInfo fWorldInfo, float value)
+        {
+            if (worldKnowledge.ContainsKey(fWorldInfo))
+                worldKnowledge[fWorldInfo] = value;
+            else
+                worldKnowledge.Add(fWorldInfo, value);
+        }
+        public void UpdateWorldKnowledge(eWorldInfo eWorldInfo, int value)
+        {
+            if (worldKnowledge.ContainsKey(eWorldInfo))
+                worldKnowledge[eWorldInfo] = value;
+            else
+                worldKnowledge.Add(eWorldInfo, value);
         }
     }
 }
