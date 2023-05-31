@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ProjetoIA.GOAP
 {
-    public class PatrolingState : IGoapFSMState
+    public class IdleState : IGoapFSMState
     {
         public void OnStateEnter()
         {

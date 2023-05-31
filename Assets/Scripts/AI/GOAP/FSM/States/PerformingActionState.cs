@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ProjetoIA.GOAP
 {
-    public class AlertState : IGoapFSMState
+    public class PerformingActionState : IGoapFSMState
     {
         public void OnStateEnter()
         {

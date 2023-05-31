@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ProjetoIA.GOAP
 {
-    public class CombatState : IGoapFSMState
+    public class MovingToState : IGoapFSMState
     {
         public void OnStateEnter()
         {
