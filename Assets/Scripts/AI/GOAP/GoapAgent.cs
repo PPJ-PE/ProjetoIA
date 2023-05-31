@@ -20,15 +20,17 @@ namespace ProjetoIA.GOAP
         protected List<GoapGoal> tasks;
         protected GoapAIWorldKnowledge aIWorldKnowledge;
 
+        private void Awake()
+        {
+            idle = new IdleState();
+            movingTo = new MovingToState();
+            performingAction = new PerformingActionState();
+        }
         private void Start()
         {
             
         }
 
-        private void Awake()
-        {
-            
-        }
         private void Update()
         {
             
