@@ -10,9 +10,9 @@ namespace ProjetoIA.GOAP
         protected GoapAISharedKnowledge sharedKnowledge;
         protected GoapAIGodKnowledge godKnowledge;
 
-        protected IReadOnlyDictionary<WorldInfo, object> PersonalDict { get { return personalKnowledge.GetWorldKnowledge(); } }
-        protected IReadOnlyDictionary<WorldInfo, object> SharedDict { get { return sharedKnowledge.GetWorldKnowledge(); } }
-        protected IReadOnlyDictionary<WorldInfo, object> GodDict { get { return godKnowledge.GetWorldKnowledge(); } }
+        protected IReadOnlyWorldKnowledge PersonalDict { get { return personalKnowledge.GetWorldKnowledge(); } }
+        protected IReadOnlyWorldKnowledge SharedDict { get { return sharedKnowledge.GetWorldKnowledge(); } }
+        protected IReadOnlyWorldKnowledge GodDict { get { return godKnowledge.GetWorldKnowledge(); } }
 
         public GoapAIWorldKnowledge(GoapAISharedKnowledge sharedKnowledge, GoapAIGodKnowledge godKnowledge)
         {
@@ -20,26 +20,72 @@ namespace ProjetoIA.GOAP
             this.sharedKnowledge = sharedKnowledge;
             this.godKnowledge = godKnowledge;
         }
-        public bool GetWorldKnowledge(WorldInfo worldInfo, out object value)
+        public bool GetWorldKnowledge(bWorldInfo bWorldInfo, out bool value)
         {
-            if (PersonalDict.ContainsKey(worldInfo))
+            if (PersonalDict.ContainsKey(bWorldInfo))
             {
-                value = PersonalDict[worldInfo];
+                value = PersonalDict[bWorldInfo];
                 return true;
             }
-            else if (SharedDict.ContainsKey(worldInfo))
+            else if (SharedDict.ContainsKey(bWorldInfo))
             {
-                value = SharedDict[worldInfo];
+                value = SharedDict[bWorldInfo];
                 return true;
             }
-            else if (GodDict.ContainsKey(worldInfo))
+            else if (GodDict.ContainsKey(bWorldInfo))
             {
-                value = GodDict[worldInfo];
+                value = GodDict[bWorldInfo];
                 return true;
             }
             else
             {
-                value = null;
+                value = false;
+                return false;
+            }
+        }
+        public bool GetWorldKnowledge(fWorldInfo fWorldInfo, out float value)
+        {
+            if (PersonalDict.ContainsKey(fWorldInfo))
+            {
+                value = PersonalDict[fWorldInfo];
+                return true;
+            }
+            else if (SharedDict.ContainsKey(fWorldInfo))
+            {
+                value = SharedDict[fWorldInfo];
+                return true;
+            }
+            else if (GodDict.ContainsKey(fWorldInfo))
+            {
+                value = GodDict[fWorldInfo];
+                return true;
+            }
+            else
+            {
+                value = 0.0f;
+                return false;
+            }
+        }
+        public bool GetWorldKnowledge(eWorldInfo eWorldInfo, out int value)
+        {
+            if (PersonalDict.ContainsKey(eWorldInfo))
+            {
+                value = PersonalDict[eWorldInfo];
+                return true;
+            }
+            else if (SharedDict.ContainsKey(eWorldInfo))
+            {
+                value = SharedDict[eWorldInfo];
+                return true;
+            }
+            else if (GodDict.ContainsKey(eWorldInfo))
+            {
+                value = GodDict[eWorldInfo];
+                return true;
+            }
+            else
+            {
+                value = 0;
                 return false;
             }
         }

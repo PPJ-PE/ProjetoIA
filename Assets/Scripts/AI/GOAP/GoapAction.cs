@@ -8,7 +8,7 @@ namespace ProjetoIA.GOAP
     {
         protected delegate bool Precondition(IGoapWorldKnowledge worldKnowledge);
 
-        protected Dictionary<WorldInfo, object> expectedEffects;
+        protected WorldKnowledge expectedEffects;
         protected Precondition[] preconditions;
 
         public bool IsValid(IGoapWorldKnowledge worldKnowledge)
@@ -20,7 +20,7 @@ namespace ProjetoIA.GOAP
 
             return true;
         }
-        public IReadOnlyDictionary<WorldInfo, object> GetExpectedEffects()
+        public IReadOnlyWorldKnowledge GetExpectedEffects()
         {
             return expectedEffects;
         }
