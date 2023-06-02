@@ -10,6 +10,9 @@ namespace ProjetoIA.GOAP
 
         protected WorldKnowledge expectedEffects;
         protected Precondition[] preconditions;
+        protected int actionCost;
+
+        public int GetActionCost() { return actionCost; }
 
         public bool IsValid(IGoapWorldKnowledge worldKnowledge)
         {
