@@ -210,5 +210,42 @@ namespace ProjetoIA.GOAP
         {
             return eKnowledge.GetEnumerator();
         }
+
+        public bool GetWorldKnowledge(bWorldInfo bWorldInfo, out bool value) {
+            if (bKnowledge.ContainsKey(bWorldInfo)) 
+            {
+                value = bKnowledge[bWorldInfo];
+                return true;
+            }
+            else 
+            {
+                value = false;
+                return false;
+            }
+        }
+
+        public bool GetWorldKnowledge(fWorldInfo fWorldInfo, out float value) {
+            if (fKnowledge.ContainsKey(fWorldInfo)) 
+            {
+                value = fKnowledge[fWorldInfo];
+                return true;
+            }
+            else 
+            {
+                value = 0f;
+                return false;
+            }
+        }
+
+        public bool GetWorldKnowledge(eWorldInfo eWorldInfo, out int value) {
+            if (eKnowledge.ContainsKey(eWorldInfo)) {
+                value = eKnowledge[eWorldInfo];
+                return true;
+            }
+            else {
+                value = 0;
+                return false;
+            }
+        }
     }
 }
