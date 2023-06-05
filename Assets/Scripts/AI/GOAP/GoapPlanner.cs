@@ -4,86 +4,65 @@ using UnityEngine;
 
 namespace ProjetoIA.GOAP
 {
-    public static class GoapPlanner
+    public class GoapPlanner
     {
-        public static Queue<GoapAction> Plan(GoapAgent agent, 
-                                                List<GoapAction> knowledge, // change name for availableActions ? Sim!
-                                                IGoapWorldKnowledge worldKnowledge, 
-                                                GoapGoal goal)
-        {
-            List<GoapAction> performableAction = UpdatePerformableActions(knowledge, worldKnowledge);
+        // On start, calculate all nodes 'solve-this' relations
 
-            List<PlanNode> planNodes = new List<PlanNode>();
-            PlanNode start = new PlanNode(null, null);
+        // Plan will have an objective and current world
 
-            BuildGraph(start, planNodes, performableAction, worldKnowledge, goal.Objective());
+        private PlanNode[] graph;
 
-            PlanNode cheapest = null;
-            foreach (PlanNode node in planNodes) 
+        public GoapPlanner(GoapAction[] allActions) {
+            BuildGraph(allActions);
+        }
+
+        private void BuildGraph(GoapAction[] allActions) 
+        { 
+            graph = new PlanNode[allActions.Length];
+
+            List<PlanNode> connections = new List<PlanNode>(); // Remember to reset
+            for (int i = 0; i < allActions.Length; i++) graph[i] = new PlanNode(allActions[i]);
+            for (int i = 0; i < allActions.Length; i++) // i is solved by j
             {
-                if (cheapest == null) cheapest = node;
-                else
+                for (int j = 0; j < allActions.Length; j++) 
                 {
-                    // check if cost is lower than current cheapest
+                    if (i == j) continue;
+                    if (allActions[i].IsValid(allActions[j].GetExpectedEffects())) graph[i].connections.Add(graph[j]);
                 }
             }
-            List<GoapAction> result = PlanNode.GetActionQueue(cheapest);
-            Queue<GoapAction> queue = new Queue<GoapAction>();
-            foreach (GoapAction action in result) queue.Enqueue(action);
-
-            return queue;
         }
 
-        private static List<GoapAction> UpdatePerformableActions(List<GoapAction> knowledge, IGoapWorldKnowledge worldKnowledge) 
+        public Queue<GoapAction> Plan(IGoapWorldKnowledge worldKnowledge, GoapGoal goal)
         {
-            List<GoapAction> performableActions = new List<GoapAction> ();
-            foreach(GoapAction action in knowledge) if(action.IsValid(worldKnowledge) /* expected results */) performableActions.Add(action);
-            
-            //Debug.LogError("Invalid action sent to plan!");
-            return performableActions;
+            // 1- Construir lista com todas as actions que atingem a goal
+            List<PlanNode> GoalActions = new List<PlanNode>();
+            foreach(PlanNode node in graph) if(node.Action.GetExpectedEffects() == goal.Objective()) GoalActions.Add(node);
+
+            // 2- Construir lista com todas as actions que são validas no worldknowledge atual ????
+
+            // 3- Para cada ação que atinge a goal, chamar um metodo que calcula um plano de qualquer ação valida com a atual
+            foreach (PlanNode node in GoalActions) 
+            {
+
+            }
+
+            return new Queue<GoapAction>(); //
         }
 
-        private static void BuildGraph(PlanNode parent, List<PlanNode> planNodes, List<GoapAction> performableActions, IGoapWorldKnowledge worldKnowledge, WorldKnowledge goal) 
+        // If an action has a precondition equal to it's expected effect, this method WILL overflow
+        private void AStar() 
         {
-            foreach (GoapAction action in performableActions) 
-            {
-                if (action.GetExpectedEffects() == goal) 
-                {
-                    PlanNode node = new PlanNode(parent, action);
-                    if (!action.IsValid(worldKnowledge)) 
-                    {
-                        BuildGraph(node, planNodes, worldKnowledge, goal);
-                    }
-                }
-            }
+
         }
+        
+        class PlanNode 
+        {
+            public List<PlanNode> connections; // This node solves these other nodes
+            public GoapAction Action { get; private set; }
 
-        class PlanNode {
-            public PlanNode parent;
-            public GoapAction action;
-            public IReadOnlyWorldKnowledge knowledgeAfterAction;
-
-            public PlanNode(PlanNode parent, GoapAction action) 
+            public PlanNode(GoapAction action) 
             {
-                this.parent = parent;
-                this.action = action;
-                knowledgeAfterAction = parent.knowledgeAfterAction; // copy world state after parent action
-                // change world state to after THIS action
-            }
-
-            public static List<GoapAction> GetActionQueue(PlanNode node) 
-            {
-                List<GoapAction> actionQueue = new List<GoapAction>();
-                AddActionToQueue(node, actionQueue);
-                return actionQueue;
-            }
-
-            private static void AddActionToQueue(PlanNode node, List<GoapAction> queue) 
-            {
-                if (node.parent != null) {
-                    queue.Insert(0, node.action);
-                    AddActionToQueue(node.parent, queue);
-                }
+                Action = action;
             }
         }
     }
