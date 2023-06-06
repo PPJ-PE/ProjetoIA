@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace ProjetoIA.GOAP
@@ -35,29 +36,53 @@ namespace ProjetoIA.GOAP
         public Queue<GoapAction> Plan(IGoapWorldKnowledge worldKnowledge, GoapGoal goal)
         {
             // 1- Construir lista com todas as actions que atingem a goal
-            List<PlanNode> GoalActions = new List<PlanNode>();
-            foreach(PlanNode node in graph) if(node.Action.GetExpectedEffects() == goal.Objective()) GoalActions.Add(node);
+            List<PlanNode> goalActions = new List<PlanNode>();
+            foreach(PlanNode node in graph) if(node.Action.GetExpectedEffects() == goal.Objective()) goalActions.Add(node);
 
             // 2- Construir lista com todas as actions que são validas no worldknowledge atual ????
 
             // 3- Para cada ação que atinge a goal, chamar um metodo que calcula um plano de qualquer ação valida com a atual
-            foreach (PlanNode node in GoalActions) 
+            
+            foreach (PlanNode node in goalActions) 
             {
 
+                if (node.Action.IsValid(worldKnowledge))
+                {
+                    Queue<GoapAction> queue = new Queue<GoapAction>();
+                    queue.Enqueue(node.Action);
+                    return queue;
+                }
+                foreach (PlanNode connection in node.connections) 
+                {
+                    
+                }
             }
 
             return new Queue<GoapAction>(); //
         }
 
         // If an action has a precondition equal to it's expected effect, this method WILL overflow
-        private void AStar() 
+        private List<PlanNode> AStar(List<PlanNode> goalActions) 
         {
+            goalActions.Sort((x, y) => x.Action.GetActionCost().CompareTo(y.Action.GetActionCost())); // Sort by cost (min -> max)
+            Queue<PlanNode> openNodes = new Queue<PlanNode>(goalActions); // Non-performative?
+            List<PlanNode> closedNodes = new List<PlanNode>();
+            PlanNode currentNode;
 
+            currentNode = openNodes.Dequeue();
+            closedNodes.Add(currentNode);
+
+            if (currentNode.Action.IsValid(worldKnowledge)) 
+            {
+                List<PlanNode> queue = new List<PlanNode>();
+                queue.Add(currentNode);
+                return queue;
+            }
         }
         
         class PlanNode 
         {
-            public List<PlanNode> connections; // This node solves these other nodes
+            public List<PlanNode> connections; // This node is solved by these other nodes
             public GoapAction Action { get; private set; }
 
             public PlanNode(GoapAction action) 
