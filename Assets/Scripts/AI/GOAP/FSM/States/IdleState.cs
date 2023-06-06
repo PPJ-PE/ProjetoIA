@@ -16,7 +16,7 @@ namespace ProjetoIA.GOAP
             throw new System.NotImplementedException();
         }
 
-        public void RunState()
+        public void Update()
         {
             throw new System.NotImplementedException();
         }

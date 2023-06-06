@@ -8,6 +8,6 @@ namespace ProjetoIA.GOAP
     {
         void OnStateEnter();
         void OnStateExit();
-        void RunState();
+        void Update();
     }
 }

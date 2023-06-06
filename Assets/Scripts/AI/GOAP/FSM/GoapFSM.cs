@@ -4,14 +4,10 @@ using UnityEngine;
 
 namespace ProjetoIA.GOAP
 {
-    public class GoapFSM
+    public enum GoapFSMStates
     {
-        private IGoapFSMState currentState;
-        public void ChangeState(IGoapFSMState newState)
-        {
-            currentState.OnStateExit();
-            currentState = newState;
-            currentState.OnStateEnter();
-        }
+        Idle,
+        MovingTo,
+        PerformingAction
     }
 }
