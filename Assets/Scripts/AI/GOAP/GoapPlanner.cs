@@ -7,16 +7,13 @@ namespace ProjetoIA.GOAP
 {
     public class GoapPlanner
     {
-        // On start, calculate all nodes 'solve-this' relations
-
-        // Plan will have an objective and current world
-
         private PlanNode[] graph;
 
         public GoapPlanner(GoapAction[] allActions) {
             BuildGraph(allActions);
         }
 
+        // Create all nodes, Calculate all nodes 'solve-by' relations
         private void BuildGraph(GoapAction[] allActions) 
         { 
             graph = new PlanNode[allActions.Length];
@@ -42,7 +39,8 @@ namespace ProjetoIA.GOAP
             // 2- Construir lista com todas as actions que são validas no worldknowledge atual ????
 
             // 3- Para cada ação que atinge a goal, chamar um metodo que calcula um plano de qualquer ação valida com a atual
-            
+
+            goalActions.Sort((x, y) => x.Action.GetActionCost().CompareTo(y.Action.GetActionCost())); // Sort by cost (min -> max)
             foreach (PlanNode node in goalActions) 
             {
 
@@ -61,16 +59,33 @@ namespace ProjetoIA.GOAP
             return new Queue<GoapAction>(); //
         }
 
-        // If an action has a precondition equal to it's expected effect, this method WILL overflow
         private List<PlanNode> AStar(List<PlanNode> goalActions) 
         {
             goalActions.Sort((x, y) => x.Action.GetActionCost().CompareTo(y.Action.GetActionCost())); // Sort by cost (min -> max)
-            Queue<PlanNode> openNodes = new Queue<PlanNode>(goalActions); // Non-performative?
+            List<PlanNode> openNodes = new List<PlanNode>(goalActions);
             List<PlanNode> closedNodes = new List<PlanNode>();
             PlanNode currentNode;
 
-            currentNode = openNodes.Dequeue();
-            closedNodes.Add(currentNode);
+            do
+            {
+                currentNode = openNodes[0];
+                openNodes.RemoveAt(0);
+                closedNodes.Add(currentNode);
+
+                currentNode.SortNodes();
+
+                foreach (PlanNode connection in currentNode.connections)
+                {
+                    int sum = currentNode.currentComingFromCost + currentNode.Action.GetActionCost();
+                    if (connection.currentComingFromCost == 0 || connection.currentComingFromCost > sum)
+                    {
+                    connection.currentComingFrom = currentNode;
+                    connection.currentComingFromCost = sum;
+
+                    }
+                }
+            } 
+            while (openNodes.Count > 0 && !currentNode.Action.IsValid(worldKnowledge));
 
             if (currentNode.Action.IsValid(worldKnowledge)) 
             {
@@ -85,9 +100,17 @@ namespace ProjetoIA.GOAP
             public List<PlanNode> connections; // This node is solved by these other nodes
             public GoapAction Action { get; private set; }
 
+            public PlanNode currentComingFrom;
+            public int currentComingFromCost;
+
             public PlanNode(GoapAction action) 
             {
                 Action = action;
+            }
+
+            public void SortNodes()
+            {
+                connections.Sort((x, y) => x.Action.GetActionCost().CompareTo(y.Action.GetActionCost())); // Sort by cost (min -> max)
             }
         }
     }
