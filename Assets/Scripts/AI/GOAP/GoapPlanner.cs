@@ -19,7 +19,6 @@ namespace ProjetoIA.GOAP
         {
             graph = new PlanNode[allActions.Length];
 
-            List<PlanNode> connections = new List<PlanNode>(); // Remember to reset
             for (int i = 0; i < allActions.Length; i++) graph[i] = new PlanNode(allActions[i]);
             for (int i = 0; i < allActions.Length; i++) // i is solved by j
             {
@@ -39,7 +38,7 @@ namespace ProjetoIA.GOAP
             List<PlanNode> inversePlan = Dijkstra(goalNodes, worldKnowledge);
 
             Queue<GoapAction> planQueue = new Queue<GoapAction>();
-            for (int i = inversePlan.Count; i > 0; i--) planQueue.Enqueue(inversePlan[i].Action);
+            for (int i = inversePlan.Count - 1; i >= 0; i--) planQueue.Enqueue(inversePlan[i].Action);
 
             return planQueue; 
         }
@@ -94,11 +93,12 @@ namespace ProjetoIA.GOAP
 
                 plan.Add(lastNode);
 
-                if(debugCounter++ > 20) //
-                    {
-                    Debug.LogWarning("Failed to build a plan, more than 20 iterations ocurred");
+                if(debugCounter++ > 1000) //
+                {
+                    Debug.LogWarning("Failed to build a plan, more than 1000 iterations ocurred");
                     return null;
-                    }
+                }
+
             } while (!lastNode.Action.IsValid(lastWorldKnowledge));
 
             return plan; // Inverted
