@@ -9,20 +9,21 @@ namespace ProjetoIA.GOAP
     {
         private PlanNode[] graph;
 
-        public GoapPlanner(GoapAction[] allActions) {
+        public GoapPlanner(GoapAction[] allActions)
+        {
             BuildGraph(allActions);
         }
 
         // Create all nodes, Calculate all nodes 'solve-by' relations
-        private void BuildGraph(GoapAction[] allActions) 
-        { 
+        private void BuildGraph(GoapAction[] allActions)
+        {
             graph = new PlanNode[allActions.Length];
 
             List<PlanNode> connections = new List<PlanNode>(); // Remember to reset
             for (int i = 0; i < allActions.Length; i++) graph[i] = new PlanNode(allActions[i]);
             for (int i = 0; i < allActions.Length; i++) // i is solved by j
             {
-                for (int j = 0; j < allActions.Length; j++) 
+                for (int j = 0; j < allActions.Length; j++)
                 {
                     if (i == j) continue;
                     if (allActions[i].IsValid(allActions[j].GetExpectedEffects())) graph[i].connections.Add(graph[j]);
@@ -32,70 +33,65 @@ namespace ProjetoIA.GOAP
 
         public Queue<GoapAction> Plan(IGoapWorldKnowledge worldKnowledge, GoapGoal goal)
         {
-            // 1- Construir lista com todas as actions que atingem a goal
             List<PlanNode> goalActions = new List<PlanNode>();
-            foreach(PlanNode node in graph) if(node.Action.GetExpectedEffects() == goal.Objective()) goalActions.Add(node);
+            foreach (PlanNode node in graph) if (node.Action.GetExpectedEffects() == goal.Objective()) goalActions.Add(node);
 
-            // 2- Construir lista com todas as actions que são validas no worldknowledge atual ????
-
-            // 3- Para cada ação que atinge a goal, chamar um metodo que calcula um plano de qualquer ação valida com a atual
-
-            goalActions.Sort((x, y) => x.Action.GetActionCost().CompareTo(y.Action.GetActionCost())); // Sort by cost (min -> max)
-            foreach (PlanNode node in goalActions) 
-            {
-
-                if (node.Action.IsValid(worldKnowledge))
-                {
-                    Queue<GoapAction> queue = new Queue<GoapAction>();
-                    queue.Enqueue(node.Action);
-                    return queue;
-                }
-                foreach (PlanNode connection in node.connections) 
-                {
-                    
-                }
-            }
+            Dijkstra(goalActions);
 
             return new Queue<GoapAction>(); //
         }
 
-        private List<PlanNode> AStar(List<PlanNode> goalActions) 
+        private List<PlanNode> Dijkstra(List<PlanNode> goalNodes)
         {
-            goalActions.Sort((x, y) => x.Action.GetActionCost().CompareTo(y.Action.GetActionCost())); // Sort by cost (min -> max)
-            List<PlanNode> openNodes = new List<PlanNode>(goalActions);
-            List<PlanNode> closedNodes = new List<PlanNode>();
-            PlanNode currentNode;
+            List<PlanNode> plan = new List<PlanNode>();
 
+            PlanNode lastNode;
+            List<PlanNode> currentNodes = goalNodes;
+            List<int> lowestCostNodes = new List<int>();
+            int lowestCostNode = 0;
             do
             {
-                currentNode = openNodes[0];
-                openNodes.RemoveAt(0);
-                closedNodes.Add(currentNode);
-
-                currentNode.SortNodes();
-
-                foreach (PlanNode connection in currentNode.connections)
+                // Calculate nodes costs
+                for (int i = 0; i < currentNodes.Count; i++)
                 {
-                    int sum = currentNode.currentComingFromCost + currentNode.Action.GetActionCost();
-                    if (connection.currentComingFromCost == 0 || connection.currentComingFromCost > sum)
+                    lowestCostNodes.Add(0);
+                    if (currentNodes[i].Action.IsValid(lastNode.Action.GetExpectedEffects()))
                     {
-                    connection.currentComingFrom = currentNode;
-                    connection.currentComingFromCost = sum;
-
+                        lowestCostNodes[i] = currentNodes[i].currentComingFromCost + currentNodes[i].Action.GetActionCost();
+                        continue;
+                    }
+                    int testCost;
+                    foreach (PlanNode test in currentNodes[i].connections)
+                    {
+                        testCost = currentNodes[i].currentComingFromCost + currentNodes[i].Action.GetActionCost() + test.Action.GetActionCost();
+                        if (lowestCostNodes[i] == 0 || lowestCostNodes[i] > testCost)
+                        {
+                            //
+                            lowestCostNodes[i] = testCost;
+                        }
                     }
                 }
-            } 
-            while (openNodes.Count > 0 && !currentNode.Action.IsValid(worldKnowledge));
+                // Select node with lowest cost
+                for(int i = 0; i < lowestCostNodes.Count; i++)
+                {
+                    if (i == 0) continue;
+                    if (lowestCostNodes[lowestCostNode] > lowestCostNodes[i]) lowestCostNode = i;
+                }
 
-            if (currentNode.Action.IsValid(worldKnowledge)) 
-            {
-                List<PlanNode> queue = new List<PlanNode>();
-                queue.Add(currentNode);
-                return queue;
-            }
+                // Setup for loop
+                lastNode = currentNodes[lowestCostNode];
+                currentNodes = lastNode.connections;
+                lowestCostNodes.Clear();
+                lowestCostNode = 0;
+
+                plan.Add(lastNode);
+
+            } while (!lastNode.Action.IsValid(currentNodes));
+
+            return new Queue<PlanNode>(plan); // Needs to invert
         }
-        
-        class PlanNode 
+
+        class PlanNode
         {
             public List<PlanNode> connections; // This node is solved by these other nodes
             public GoapAction Action { get; private set; }
@@ -103,15 +99,15 @@ namespace ProjetoIA.GOAP
             public PlanNode currentComingFrom;
             public int currentComingFromCost;
 
-            public PlanNode(GoapAction action) 
+            public PlanNode(GoapAction action)
             {
                 Action = action;
             }
 
-            public void SortNodes()
-            {
-                connections.Sort((x, y) => x.Action.GetActionCost().CompareTo(y.Action.GetActionCost())); // Sort by cost (min -> max)
-            }
+            //public void SortNodes()
+            //{
+            //    connections.Sort((x, y) => x.Action.GetActionCost().CompareTo(y.Action.GetActionCost())); // Sort by cost (min -> max)
+            //}
         }
     }
 }
