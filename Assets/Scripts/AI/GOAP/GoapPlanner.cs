@@ -33,34 +33,41 @@ namespace ProjetoIA.GOAP
 
         public Queue<GoapAction> Plan(IGoapWorldKnowledge worldKnowledge, GoapGoal goal)
         {
-            List<PlanNode> goalActions = new List<PlanNode>();
-            foreach (PlanNode node in graph) if (node.Action.GetExpectedEffects() == goal.Objective()) goalActions.Add(node);
+            List<PlanNode> goalNodes = new List<PlanNode>();
+            foreach (PlanNode node in graph) if (node.Action.GetExpectedEffects() == goal.Objective()) goalNodes.Add(node);
 
-            Dijkstra(goalActions);
+            List<PlanNode> inversePlan = Dijkstra(goalNodes, worldKnowledge);
 
-            return new Queue<GoapAction>(); //
+            Queue<GoapAction> planQueue = new Queue<GoapAction>();
+            for (int i = inversePlan.Count; i > 0; i--) planQueue.Enqueue(inversePlan[i].Action);
+
+            return planQueue; 
         }
 
-        private List<PlanNode> Dijkstra(List<PlanNode> goalNodes)
+        private List<PlanNode> Dijkstra(List<PlanNode> goalNodes, IGoapWorldKnowledge worldKnowledge)
         {
             List<PlanNode> plan = new List<PlanNode>();
 
-            PlanNode lastNode;
+            PlanNode lastNode = null;
             List<PlanNode> currentNodes = goalNodes;
             List<int> lowestCostNodes = new List<int>();
             int lowestCostNode = 0;
+            int testCost; // 
+            IGoapWorldKnowledge lastWorldKnowledge;
+
+            int debugCounter = 0; //
             do
             {
                 // Calculate nodes costs
                 for (int i = 0; i < currentNodes.Count; i++)
                 {
                     lowestCostNodes.Add(0);
-                    if (currentNodes[i].Action.IsValid(lastNode.Action.GetExpectedEffects()))
+                    if (currentNodes[i].Action.IsValid(lastNode == null ?  worldKnowledge : lastNode.Action.GetExpectedEffects()))
                     {
                         lowestCostNodes[i] = currentNodes[i].currentComingFromCost + currentNodes[i].Action.GetActionCost();
                         continue;
                     }
-                    int testCost;
+                    testCost = 0;
                     foreach (PlanNode test in currentNodes[i].connections)
                     {
                         testCost = currentNodes[i].currentComingFromCost + currentNodes[i].Action.GetActionCost() + test.Action.GetActionCost();
@@ -79,6 +86,7 @@ namespace ProjetoIA.GOAP
                 }
 
                 // Setup for loop
+                lastWorldKnowledge = lastNode.Action.GetExpectedEffects();
                 lastNode = currentNodes[lowestCostNode];
                 currentNodes = lastNode.connections;
                 lowestCostNodes.Clear();
@@ -86,9 +94,14 @@ namespace ProjetoIA.GOAP
 
                 plan.Add(lastNode);
 
-            } while (!lastNode.Action.IsValid(currentNodes));
+                if(debugCounter++ > 20) //
+                    {
+                    Debug.LogWarning("Failed to build a plan, more than 20 iterations ocurred");
+                    return null;
+                    }
+            } while (!lastNode.Action.IsValid(lastWorldKnowledge));
 
-            return new Queue<PlanNode>(plan); // Needs to invert
+            return plan; // Inverted
         }
 
         class PlanNode
