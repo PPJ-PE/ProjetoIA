@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace ProjetoIA.GOAP
 {
-    public interface IReadOnlyWorldKnowledge : IReadOnlyDictionary<eWorldInfo, int>, IReadOnlyDictionary<fWorldInfo, float>, IReadOnlyDictionary<bWorldInfo, bool>
-    {
+    public interface IReadOnlyWorldKnowledge : IReadOnlyDictionary<eWorldInfo, int>, IReadOnlyDictionary<fWorldInfo, float>, IReadOnlyDictionary<bWorldInfo, bool>, IGoapWorldKnowledge {
     }
 }
