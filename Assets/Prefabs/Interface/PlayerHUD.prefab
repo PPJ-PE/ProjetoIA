@@ -114,11 +114,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f8ff69866768d24083bf6ce0dcfc570, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fillSpeed: 0.1
+  alertMeter: {fileID: 8574361379473708944}
+  alertMeterRect: {fileID: 5415017445399443295}
+  radioBase: {fileID: 8231003290647982240}
+  radioFill: {fileID: 952059472632608133}
+  radioShine: {fileID: 8960662695071370484}
+  radioShineRect: {fileID: 3889069397227830226}
+  radioShadow: {fileID: 4228576680600344181}
+  radioShadowCGroup: {fileID: 390201935955953231}
+  fillImage: {fileID: 7578030106622098472}
   fillSprites:
   - {fileID: -619464767, guid: cacfd413c805ba74e8d36f64d1ce727f, type: 3}
   - {fileID: 1120268265, guid: cacfd413c805ba74e8d36f64d1ce727f, type: 3}
   - {fileID: 342078153, guid: cacfd413c805ba74e8d36f64d1ce727f, type: 3}
+  fillSpriteID: 2
+  fillAmount: 0
+  fillSpeed: 0.1
 --- !u!1 &952059472632608133
 GameObject:
   m_ObjectHideFlags: 0

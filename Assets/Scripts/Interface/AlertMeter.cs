@@ -9,29 +9,54 @@ namespace ProjetoIA
 {
     public class AlertMeter : MonoBehaviour
     {
-        [SerializeField]
-        private float fillSpeed = 0.5f;
+        [Header("Object Referencing")]
 
+        [SerializeField]
         private GameObject alertMeter;
+
+        [SerializeField]
         private RectTransform alertMeterRect;
 
+        [SerializeField]
         private GameObject radioBase;
 
+        [SerializeField]
         private GameObject radioFill;
 
+        [SerializeField]
         private GameObject radioShine;
+
+        [SerializeField]
         private RectTransform radioShineRect;
 
+        [SerializeField]
         private GameObject radioShadow;
+
+        [SerializeField]
         private CanvasGroup radioShadowCGroup;
 
+        [SerializeField]
         private Image fillImage;
+
+        [Space(10)]
+
+        [Header("Object Manipulation")]
 
         [SerializeField]
         private Sprite[] fillSprites; // 0 é normal, 1 é meio termo e 3 é alerta máximo
-        private int fillSpriteID = 0;
 
+        [Space(10)]
+
+        [Header("Logistics")]
+
+        [SerializeField]
+        private int fillSpriteID = 2;
+
+        [SerializeField]
         private float fillAmount = 0;
+
+        [SerializeField]
+        private float fillSpeed = 0.5f;
 
         private enum AlertState
         {
@@ -44,22 +69,7 @@ namespace ProjetoIA
         // Start is called before the first frame update
         void Start()
         {
-            alertMeter = GetChildGameObject(gameObject, "AlertMeter");
-            alertMeterRect = alertMeter.GetComponent<RectTransform>();
-
-            radioBase = GetChildGameObject(gameObject, "Base");
-            radioFill = GetChildGameObject(gameObject, "Fill");
-
-            radioShine = GetChildGameObject(gameObject, "Shine");
-            radioShineRect = radioShine.GetComponent<RectTransform>();
-
-            radioShadow = GetChildGameObject(gameObject, "Shadow");
-            radioShadowCGroup = radioShadow.GetComponent<CanvasGroup>();
-
-            fillImage = radioFill.GetComponent<Image>();
-
             currentState = AlertState.Normal;
-
             radioShine.SetActive(false);
         }
 
@@ -176,12 +186,14 @@ namespace ProjetoIA
             }
         }
 
-        private GameObject GetChildGameObject(GameObject fromGameObject, string withName)
+        public void SetAlertLevel(float _alertLevel)
         {
-            // Author: Isaac Dart, June-13.
-            Transform[] ts = fromGameObject.transform.GetComponentsInChildren<Transform>(true);
-            foreach (Transform t in ts) if (t.gameObject.name == withName) return t.gameObject;
-            return null;
+            if (_alertLevel > 1.0f || _alertLevel < 0)
+            {
+                Debug.LogError("Invalid alert level!!!");
+                return;
+            }
+            fillAmount = _alertLevel;
         }
     }
 }
