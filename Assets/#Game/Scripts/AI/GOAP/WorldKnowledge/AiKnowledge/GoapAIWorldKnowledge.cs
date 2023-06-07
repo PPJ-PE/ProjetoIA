@@ -20,15 +20,30 @@ namespace ProjetoIA.GOAP
             this.sharedKnowledge = sharedKnowledge;
             this.godKnowledge = godKnowledge;
         }
-        //TODO add extra methods for updating knowledge
-        public void UpdatePersonalKnowledge(IReadOnlyWorldKnowledge worldKnowledge)
-        {
+        public void UpdatePersonalKnowledge(IReadOnlyWorldKnowledge worldKnowledge) => 
             personalKnowledge.UpdateWorldKnowledge(worldKnowledge);
-        }
-        public void UpdatePersonalKnowledge(bWorldInfo bWorldInfo, bool value)
-        {
+        public void UpdatePersonalKnowledge(bWorldInfo bWorldInfo, bool value) =>
             personalKnowledge.UpdateWorldKnowledge(bWorldInfo, value);
-        }
+        public void UpdatePersonalKnowledge(fWorldInfo fWorldInfo, float value) =>
+            personalKnowledge.UpdateWorldKnowledge(fWorldInfo, value);
+        public void UpdatePersonalKnowledge(eWorldInfo eWorldInfo, int value) =>
+            personalKnowledge.UpdateWorldKnowledge(eWorldInfo, value);
+        public void UpdateSharedKnowledge(IReadOnlyWorldKnowledge worldKnowledge) =>
+            sharedKnowledge.UpdateWorldKnowledge(worldKnowledge);
+        public void UpdateSharedKnowledge(bWorldInfo bWorldInfo, bool value) =>
+            sharedKnowledge.UpdateWorldKnowledge(bWorldInfo, value);
+        public void UpdateSharedKnowledge(fWorldInfo fWorldInfo, float value) =>
+            sharedKnowledge.UpdateWorldKnowledge(fWorldInfo, value);
+        public void UpdateSharedKnowledge(eWorldInfo eWorldInfo, int value) =>
+            sharedKnowledge.UpdateWorldKnowledge(eWorldInfo, value);
+        public void UpdateGodKnowledge(IReadOnlyWorldKnowledge worldKnowledge) =>
+            godKnowledge.UpdateWorldKnowledge(worldKnowledge);
+        public void UpdateGodKnowledge(bWorldInfo bWorldInfo, bool value) =>
+            godKnowledge.UpdateWorldKnowledge(bWorldInfo, value);
+        public void UpdateGodKnowledge(fWorldInfo fWorldInfo, float value) =>
+            godKnowledge.UpdateWorldKnowledge(fWorldInfo, value);
+        public void UpdateGodKnowledge(eWorldInfo eWorldInfo, int value) =>
+            godKnowledge.UpdateWorldKnowledge(eWorldInfo, value);
         public bool GetWorldKnowledge(bWorldInfo bWorldInfo, out bool value)
         {
             if (PersonalDict.ContainsKey(bWorldInfo))

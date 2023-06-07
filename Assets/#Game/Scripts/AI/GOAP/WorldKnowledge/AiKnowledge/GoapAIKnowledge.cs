@@ -38,7 +38,6 @@ namespace ProjetoIA.GOAP
             else
                 worldKnowledge.Add(eWorldInfo, value);
         }
-        //TODO add extra UpdateWorldKnowledge
         public void UpdateWorldKnowledge(IReadOnlyWorldKnowledge knowledgeToUpdate)
         {
             foreach (KeyValuePair<bWorldInfo, bool> kvp in (IReadOnlyDictionary<bWorldInfo, bool>)knowledgeToUpdate)
