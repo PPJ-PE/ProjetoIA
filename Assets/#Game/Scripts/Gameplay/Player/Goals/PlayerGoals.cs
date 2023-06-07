@@ -23,9 +23,7 @@ namespace ProjetoIA.GOAP.PlayerGoals
             worldKnowledge.GetWorldKnowledge(bWorldInfo.PlayerAlive, out playerAlive);
             worldKnowledge.GetWorldKnowledge(bWorldInfo.PlayerHasAssignedWaypoint, out playerWaypoint);
 
-            if (playerAlive && playerWaypoint) return true;
-            
-            return false;
+            return playerAlive && playerWaypoint;
         }
 
         public override WorldKnowledge GetObjective()

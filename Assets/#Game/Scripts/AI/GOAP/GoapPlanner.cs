@@ -58,8 +58,8 @@ namespace ProjetoIA.GOAP
                     goalNodes.Add(node);
                 }
             }
-
-            List<PlanNode> inversePlan = Dijkstra(goalNodes, worldKnowledge);
+            //TODO fix Dijkstra
+            List<PlanNode> inversePlan = new List<PlanNode>(graph); //Dijkstra(goalNodes, worldKnowledge);
 
             Queue<GoapAction> planQueue = new Queue<GoapAction>();
             for (int i = inversePlan.Count - 1; i >= 0; i--) planQueue.Enqueue(inversePlan[i].Action);
@@ -74,6 +74,7 @@ namespace ProjetoIA.GOAP
 
             return plan;
         }
+        //TODO - Wont work for 1 value
         private List<PlanNode> Dijkstra(List<PlanNode> goalNodes, IGoapWorldKnowledge worldKnowledge)
         {
             List<PlanNode> plan = new List<PlanNode>();
@@ -117,7 +118,6 @@ namespace ProjetoIA.GOAP
                     if (lowestCostNodes[lowestCostNode] > lowestCostNodes[i]) lowestCostNode = i;
                 }
 
-                // Setup for loop
                 lastWorldKnowledge = lastNode.Action.GetExpectedEffects();
                 lastNode = currentNodes[lowestCostNode];
                 currentNodes = lastNode.connections;

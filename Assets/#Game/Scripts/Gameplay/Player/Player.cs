@@ -41,7 +41,9 @@ namespace ProjetoIA
             sharedKnowledge = new GoapAISharedKnowledge();
             godKnowledge = new GoapAIGodKnowledge();
             aIWorldKnowledge = new GoapAIWorldKnowledge(sharedKnowledge, godKnowledge);
-            
+            aIWorldKnowledge.UpdatePersonalKnowledge(bWorldInfo.PlayerAlive, true);
+
+
             BuildGoals();
         }
 
@@ -64,9 +66,12 @@ namespace ProjetoIA
             Debug.Log(name + "Esta Planejando...");
             foreach (GoapGoal goal in tasks)
             {
+                if (!goal.IsValid(aIWorldKnowledge)) continue;
+
                 plan = goapPlanner.Plan(aIWorldKnowledge, goal);
                 if (plan.Count != 0)
                 {
+                    currentPlan = plan;
                     currentState = GoapFSMStates.MovingTo;
                     Debug.Log(name + "Plano encontrado:" + plan.ToString());
                     return;

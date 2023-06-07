@@ -41,15 +41,15 @@ namespace ProjetoIA.GOAP
         //TODO add extra UpdateWorldKnowledge
         public void UpdateWorldKnowledge(IReadOnlyWorldKnowledge knowledgeToUpdate)
         {
-            foreach (KeyValuePair<bWorldInfo, bool> kvp in (IReadOnlyDictionary<bWorldInfo, bool>)worldKnowledge)
+            foreach (KeyValuePair<bWorldInfo, bool> kvp in (IReadOnlyDictionary<bWorldInfo, bool>)knowledgeToUpdate)
             {
                 UpdateWorldKnowledge(kvp.Key, kvp.Value);
             }
-            foreach (KeyValuePair<eWorldInfo, int> kvp in (IReadOnlyDictionary<eWorldInfo, int>)worldKnowledge)
+            foreach (KeyValuePair<eWorldInfo, int> kvp in (IReadOnlyDictionary<eWorldInfo, int>)knowledgeToUpdate)
             {
                 UpdateWorldKnowledge(kvp.Key, kvp.Value);
             }
-            foreach (KeyValuePair<fWorldInfo, float> kvp in (IReadOnlyDictionary<fWorldInfo, float>)worldKnowledge)
+            foreach (KeyValuePair<fWorldInfo, float> kvp in (IReadOnlyDictionary<fWorldInfo, float>)knowledgeToUpdate)
             {
                 UpdateWorldKnowledge(kvp.Key, kvp.Value);
             }

@@ -14,6 +14,9 @@ namespace ProjetoIA
         protected override void Awake()
         {
             base.Awake();
+        }
+        protected virtual void Start()
+        {
             playerAgent = PFields.NavAgent;
         }
         protected override void BuildExpectedEffects()
@@ -50,6 +53,8 @@ namespace ProjetoIA
                 {
                     if (!playerAgent.hasPath || playerAgent.velocity.sqrMagnitude == 0f)
                     {
+                        playerAgent.isStopped = true;
+                        playerAgent.ResetPath();
                         return true;
                     }
                 }
