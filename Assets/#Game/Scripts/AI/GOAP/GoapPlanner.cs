@@ -7,6 +7,24 @@ namespace ProjetoIA.GOAP
 {
     public class GoapPlanner
     {
+        private class PlanNode
+        {
+            public List<PlanNode> connections; // This node is solved by these other nodes
+            public GoapAction Action { get; private set; }
+
+            public PlanNode currentComingFrom;
+            public int currentComingFromCost;
+
+            public PlanNode(GoapAction action)
+            {
+                Action = action;
+            }
+
+            //public void SortNodes()
+            //{
+            //    connections.Sort((x, y) => x.Action.GetActionCost().CompareTo(y.Action.GetActionCost())); // Sort by cost (min -> max)
+            //}
+        }
         private PlanNode[] graph;
 
         public GoapPlanner(GoapAction[] allActions)
@@ -33,7 +51,13 @@ namespace ProjetoIA.GOAP
         public Queue<GoapAction> Plan(IGoapWorldKnowledge worldKnowledge, GoapGoal goal)
         {
             List<PlanNode> goalNodes = new List<PlanNode>();
-            foreach (PlanNode node in graph) if (node.Action.GetExpectedEffects() == goal.GetObjective()) goalNodes.Add(node);
+            foreach (PlanNode node in graph)
+            {
+                if (CompareDictValues(node.Action.GetExpectedEffects(), goal.GetObjective()))
+                {
+                    goalNodes.Add(node);
+                }
+            }
 
             List<PlanNode> inversePlan = Dijkstra(goalNodes, worldKnowledge);
 
@@ -53,6 +77,8 @@ namespace ProjetoIA.GOAP
         private List<PlanNode> Dijkstra(List<PlanNode> goalNodes, IGoapWorldKnowledge worldKnowledge)
         {
             List<PlanNode> plan = new List<PlanNode>();
+
+            if (goalNodes.Count == 0) return plan;
 
             PlanNode lastNode = null;
             List<PlanNode> currentNodes = goalNodes;
@@ -110,24 +136,35 @@ namespace ProjetoIA.GOAP
 
             return plan; // Inverted
         }
-
-        class PlanNode
+        private static bool CompareDictValues(IReadOnlyWorldKnowledge baseDict, IReadOnlyWorldKnowledge toCompare)
         {
-            public List<PlanNode> connections; // This node is solved by these other nodes
-            public GoapAction Action { get; private set; }
+            bool bValue;
+            float fValue;
+            int eValue;
 
-            public PlanNode currentComingFrom;
-            public int currentComingFromCost;
-
-            public PlanNode(GoapAction action)
+            foreach (KeyValuePair<bWorldInfo, bool> kvp in (IReadOnlyDictionary<bWorldInfo, bool>)baseDict)
             {
-                Action = action;
+                if (!(toCompare.TryGetValue(kvp.Key, out bValue) && bValue == kvp.Value))
+                {
+                    return false;
+                }
+            }
+            foreach (KeyValuePair<eWorldInfo, int> kvp in (IReadOnlyDictionary<eWorldInfo, int>)baseDict)
+            {
+                if (!(toCompare.TryGetValue(kvp.Key, out eValue) && eValue == kvp.Value))
+                {
+                    return false;
+                }
+            }
+            foreach (KeyValuePair<fWorldInfo, float> kvp in (IReadOnlyDictionary<fWorldInfo, float>)baseDict)
+            {
+                if (!(toCompare.TryGetValue(kvp.Key, out fValue) && fValue == kvp.Value))
+                {
+                    return false;
+                }
             }
 
-            //public void SortNodes()
-            //{
-            //    connections.Sort((x, y) => x.Action.GetActionCost().CompareTo(y.Action.GetActionCost())); // Sort by cost (min -> max)
-            //}
+            return true;
         }
     }
 }

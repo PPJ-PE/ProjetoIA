@@ -9,17 +9,30 @@ namespace ProjetoIA.GOAP
         protected delegate bool Precondition(IGoapWorldKnowledge worldKnowledge);
 
         protected WorldKnowledge expectedEffects;
-        protected Precondition[] preconditions;
+        protected Precondition precondition;
         protected int actionCost;
 
+        protected virtual void Awake()
+        {
+            BuildExpectedEffects();
+            BuildPreconditions();
+        }
+
+        protected abstract void BuildExpectedEffects();
+        protected abstract void BuildPreconditions();
+        /// <summary>
+        /// Executa a acao
+        /// </summary>
+        /// <returns>Retorna true quando a acao finalizar</returns>
+        public abstract bool RunAction();
         public abstract Vector3 GetActionLocation();
         public int GetActionCost() { return actionCost; }
 
         public virtual bool IsValid(IGoapWorldKnowledge worldKnowledge)
         {
-            foreach (Precondition precondition in preconditions)
+            if (precondition != null)
             {
-                if(!precondition(worldKnowledge)) return false;
+                return precondition(worldKnowledge);
             }
 
             return true;

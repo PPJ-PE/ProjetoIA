@@ -20,6 +20,11 @@ namespace ProjetoIA.GOAP
             this.sharedKnowledge = sharedKnowledge;
             this.godKnowledge = godKnowledge;
         }
+        //TODO add extra methods for updating knowledge
+        public void UpdatePersonalKnowledge(IReadOnlyWorldKnowledge worldKnowledge)
+        {
+            personalKnowledge.UpdateWorldKnowledge(worldKnowledge);
+        }
         public void UpdatePersonalKnowledge(bWorldInfo bWorldInfo, bool value)
         {
             personalKnowledge.UpdateWorldKnowledge(bWorldInfo, value);

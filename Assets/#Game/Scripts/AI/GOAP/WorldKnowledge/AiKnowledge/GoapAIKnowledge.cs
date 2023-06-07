@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -36,6 +37,22 @@ namespace ProjetoIA.GOAP
                 worldKnowledge[eWorldInfo] = value;
             else
                 worldKnowledge.Add(eWorldInfo, value);
+        }
+        //TODO add extra UpdateWorldKnowledge
+        public void UpdateWorldKnowledge(IReadOnlyWorldKnowledge knowledgeToUpdate)
+        {
+            foreach (KeyValuePair<bWorldInfo, bool> kvp in (IReadOnlyDictionary<bWorldInfo, bool>)worldKnowledge)
+            {
+                UpdateWorldKnowledge(kvp.Key, kvp.Value);
+            }
+            foreach (KeyValuePair<eWorldInfo, int> kvp in (IReadOnlyDictionary<eWorldInfo, int>)worldKnowledge)
+            {
+                UpdateWorldKnowledge(kvp.Key, kvp.Value);
+            }
+            foreach (KeyValuePair<fWorldInfo, float> kvp in (IReadOnlyDictionary<fWorldInfo, float>)worldKnowledge)
+            {
+                UpdateWorldKnowledge(kvp.Key, kvp.Value);
+            }
         }
     }
 }

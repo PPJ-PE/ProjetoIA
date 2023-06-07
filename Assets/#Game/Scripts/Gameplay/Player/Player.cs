@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace ProjetoIA
 {
@@ -12,8 +13,9 @@ namespace ProjetoIA
         [System.Serializable]
         public class PFields
         {
+            public NavMeshAgent NavAgent;
             [ReadOnly]
-            public Vector3 currentMoveTarget;
+            public Vector3 CurrentMoveTarget;
         }
 
         [SerializeField] private PFields pFields;
@@ -33,6 +35,7 @@ namespace ProjetoIA
             foreach (GoapAction action in actions)
             {
                 ((PlayerAction)action).PFields = pFields;
+                ((PlayerAction)action).Player = this;
             }
 
             sharedKnowledge = new GoapAISharedKnowledge();
@@ -50,7 +53,7 @@ namespace ProjetoIA
         public void GoToPosition(Vector3 moveTarget)
         {
             aIWorldKnowledge.UpdatePersonalKnowledge(bWorldInfo.PlayerHasAssignedWaypoint, true);
-            pFields.currentMoveTarget = moveTarget;
+            pFields.CurrentMoveTarget = moveTarget;
         }
 
         protected override void IdleState()
@@ -70,12 +73,16 @@ namespace ProjetoIA
                 }
             }
             
-            Debug.Log(name + "Nao encontrou um plano...");
+            Debug.LogWarning(name + "Nao encontrou um plano...");
         }
 
         protected override void MovingToState()
         {
-            throw new System.NotImplementedException();
+            if (currentPlan.Peek().RunAction())
+            {
+                aIWorldKnowledge.UpdatePersonalKnowledge(currentPlan.Dequeue().GetExpectedEffects());
+                currentState = GoapFSMStates.Idle;
+            }
         }
 
         protected override void PerformingAction()
