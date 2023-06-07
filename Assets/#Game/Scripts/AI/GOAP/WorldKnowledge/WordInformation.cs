@@ -29,6 +29,7 @@ namespace ProjetoIA.GOAP
     {
         //Player
         PlayerAlive,                //bool
+        PlayerHasAssignedWaypoint,   //bool
         PlayerVisible,              //bool
         Camouflaged,                //bool
         //Equipment:

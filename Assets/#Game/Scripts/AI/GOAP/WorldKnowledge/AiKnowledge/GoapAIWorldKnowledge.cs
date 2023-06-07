@@ -20,6 +20,10 @@ namespace ProjetoIA.GOAP
             this.sharedKnowledge = sharedKnowledge;
             this.godKnowledge = godKnowledge;
         }
+        public void UpdatePersonalKnowledge(bWorldInfo bWorldInfo, bool value)
+        {
+            personalKnowledge.UpdateWorldKnowledge(bWorldInfo, value);
+        }
         public bool GetWorldKnowledge(bWorldInfo bWorldInfo, out bool value)
         {
             if (PersonalDict.ContainsKey(bWorldInfo))

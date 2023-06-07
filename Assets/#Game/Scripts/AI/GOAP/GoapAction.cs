@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ProjetoIA.GOAP
 {
-    public abstract class GoapAction
+    public abstract class GoapAction : MonoBehaviour
     {
         protected delegate bool Precondition(IGoapWorldKnowledge worldKnowledge);
 

@@ -33,7 +33,7 @@ namespace ProjetoIA.GOAP
         public Queue<GoapAction> Plan(IGoapWorldKnowledge worldKnowledge, GoapGoal goal)
         {
             List<PlanNode> goalNodes = new List<PlanNode>();
-            foreach (PlanNode node in graph) if (node.Action.GetExpectedEffects() == goal.Objective()) goalNodes.Add(node);
+            foreach (PlanNode node in graph) if (node.Action.GetExpectedEffects() == goal.GetObjective()) goalNodes.Add(node);
 
             List<PlanNode> inversePlan = Dijkstra(goalNodes, worldKnowledge);
 

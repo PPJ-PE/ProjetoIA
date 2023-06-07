@@ -9,26 +9,19 @@ namespace ProjetoIA.GOAP
 {
     public abstract class GoapAgent : MonoBehaviour
     {
-        [SerializeField] protected NavMeshAgent navAgent;
+        [SerializeField, ReadOnly] protected GoapAction[] actions;
 
-        protected GoapFSMStates currentState;
+        [SerializeField, ReadOnly] protected GoapFSMStates currentState;
 
         protected Queue<GoapAction> currentPlan;
-        protected GoapAction[] actions;
-
-        protected List<GoapGoal> tasks;
-        protected GoapAIWorldKnowledge aIWorldKnowledge;
         protected GoapPlanner goapPlanner;
 
-        protected virtual void Awake()
-        {
-            currentState = GoapFSMStates.Idle;
-            goapPlanner = new GoapPlanner(actions);
-        }
+        protected List<GoapGoal> tasks;
 
-        protected virtual void Update()
+        [EditorCools.Button]
+        protected void FindGoapActions()
         {
-            UpdateState();
+            actions = GetComponents<GoapAction>();
         }
 
         private void UpdateState()
@@ -47,32 +40,20 @@ namespace ProjetoIA.GOAP
             }
         }
 
-        protected virtual void IdleState()
+        protected virtual void Awake()
         {
-            Queue<GoapAction> plan;
-            tasks.OrderByDescending((GoapGoal x) => x.Priority());
+            currentState = GoapFSMStates.Idle;
+            goapPlanner = new GoapPlanner(actions);
+            tasks = new List<GoapGoal>();
+        }
 
-            Debug.Log(name + "Esta Planejando...");
-            foreach (GoapGoal goal in tasks)
-            {
-                plan = goapPlanner.Plan(aIWorldKnowledge, goal);
-                if (plan.Count != 0)
-                {
-                    currentState = GoapFSMStates.MovingTo;
-                    Debug.Log(name + "Plano encontrado:" + plan.ToString());
-                    return;
-                }
-            }
+        protected virtual void Update()
+        {
+            UpdateState();
+        }
 
-            Debug.Log(name + "Nao encontrou um plano...");
-        }
-        protected virtual void MovingToState()
-        {
-            
-        }
-        protected virtual void PerformingAction()
-        {
-            
-        }
+        protected abstract void IdleState();
+        protected abstract void MovingToState();
+        protected abstract void PerformingAction();
     }
 }
