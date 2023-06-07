@@ -14,6 +14,7 @@ namespace ProjetoIA
         public class PFields
         {
             public NavMeshAgent NavAgent;
+            public Animator animator;
             [ReadOnly]
             public Vector3 CurrentMoveTarget;
         }
@@ -73,6 +74,7 @@ namespace ProjetoIA
                 {
                     currentPlan = plan;
                     currentState = GoapFSMStates.MovingTo;
+                    pFields.animator.SetTrigger("Run");
                     Debug.Log(name + "Plano encontrado:" + plan.ToString());
                     return;
                 }
@@ -87,6 +89,7 @@ namespace ProjetoIA
             {
                 aIWorldKnowledge.UpdatePersonalKnowledge(currentPlan.Dequeue().GetExpectedEffects());
                 currentState = GoapFSMStates.Idle;
+                pFields.animator.SetTrigger("Idle");
             }
         }
 
