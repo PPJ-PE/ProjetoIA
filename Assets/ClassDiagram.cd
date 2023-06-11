@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ProjetoIA.GOAP.IdleState" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="13" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAIAAAAA=</HashCode>
+      <FileName>Assets\#Game\Scripts\AI\GOAP\FSM\States\IdleState.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ProjetoIA.GOAP.MovingToState" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="9" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAIAAAAA=</HashCode>
+      <FileName>Assets\#Game\Scripts\AI\GOAP\FSM\States\MovingToState.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ProjetoIA.GOAP.PerformingActionState" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="10.75" Y="8.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAIAAAAA=</HashCode>
+      <FileName>Assets\#Game\Scripts\AI\GOAP\FSM\States\PerformingActionState.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ProjetoIA.GOAP.GoapAction" Collapsed="true">
+    <Position X="21.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAIAAAACAAAILgAAAABAAAAAIAAAAAAAAAAAEA=</HashCode>
+      <FileName>Assets\#Game\Scripts\AI\GOAP\GoapAction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ProjetoIA.GOAP.GoapAgent">
+    <Position X="19" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAEAAAAEKAAAAAAAAABAgAAAAgAAAAABAAAAEA=</HashCode>
+      <FileName>Assets\#Game\Scripts\AI\GOAP\GoapAgent.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="actions" />
+      <Field Name="goapPlanner" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ProjetoIA.GOAP.GoapGoal" Collapsed="true">
+    <Position X="23.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAgAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Assets\#Game\Scripts\AI\GOAP\GoapGoal.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ProjetoIA.GOAP.GoapPlanner">
+    <Position X="26" Y="1.25" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="ProjetoIA.GOAP.GoapPlanner.PlanNode">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\#Game\Scripts\AI\GOAP\GoapPlanner.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAAAAACAAAEAEAACAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\#Game\Scripts\AI\GOAP\GoapPlanner.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ProjetoIA.GOAP.GoapAIGodKnowledge" Collapsed="true">
+    <Position X="8.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\#Game\Scripts\AI\GOAP\WorldKnowledge\AiKnowledge\GoapAIGodKnowledge.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ProjetoIA.GOAP.GoapAIKnowledge">
+    <Position X="9.75" Y="3.5" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQABAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Assets\#Game\Scripts\AI\GOAP\WorldKnowledge\AiKnowledge\GoapAIKnowledge.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="worldKnowledge" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ProjetoIA.GOAP.GoapAIPersonalKnowledge" Collapsed="true">
+    <Position X="11" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\#Game\Scripts\AI\GOAP\WorldKnowledge\AiKnowledge\GoapAIPersonalKnowledge.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ProjetoIA.GOAP.GoapAISharedKnowledge" Collapsed="true">
+    <Position X="13.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\#Game\Scripts\AI\GOAP\WorldKnowledge\AiKnowledge\GoapAISharedKnowledge.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ProjetoIA.GOAP.GoapAIWorldKnowledge" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="22" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAACAADAABAAQABIAAAAACAAAAAAAAAAg=</HashCode>
+      <FileName>Assets\#Game\Scripts\AI\GOAP\WorldKnowledge\AiKnowledge\GoapAIWorldKnowledge.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ProjetoIA.GOAP.WorldKnowledge" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="15.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAIAAAEAAAAMBCAQCIABFCQAAAAQAAAUAQAIAIRQoAE=</HashCode>
+      <FileName>Assets\#Game\Scripts\AI\GOAP\WorldKnowledge\WorldKnowledge.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ProjetoIA.EnemyBase" Collapsed="true">
+    <Position X="17" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\#Game\Scripts\Gameplay\Enemies\EnemyBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ProjetoIA.EnemyGrunt" Collapsed="true">
+    <Position X="17" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAIAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Assets\#Game\Scripts\Gameplay\Enemies\EnemyGrunt.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ProjetoIA.PlayerAction" Collapsed="true">
+    <Position X="21.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>Assets\#Game\Scripts\Gameplay\Player\Actions\PlayerAction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ProjetoIA.PlayerMoveTo" Collapsed="true">
+    <Position X="21.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIACAACABAIAAAAAAAAAAAAIAAAAAAAAAAAEA=</HashCode>
+      <FileName>Assets\#Game\Scripts\Gameplay\Player\Actions\PlayerMoveTo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ProjetoIA.Player">
+    <Position X="19" Y="7" Width="1.5" />
+    <NestedTypes>
+      <Class Name="ProjetoIA.Player.PFields" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\#Game\Scripts\Gameplay\Player\Player.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>IAQAAAAEAAAAAIAACAAAAAAAAAAAAABAAAAABAlAAEA=</HashCode>
+      <FileName>Assets\#Game\Scripts\Gameplay\Player\Player.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="aIWorldKnowledge" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ProjetoIA.GOAP.PlayerGoals.GoToWaypoint" Collapsed="true">
+    <Position X="23.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAARAAAAAAAgAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Assets\#Game\Scripts\Gameplay\Player\Goals\PlayerGoals.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="ProjetoIA.GOAP.IGoapFSMState" Collapsed="true">
+    <Position X="9.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAIAAAAA=</HashCode>
+      <FileName>Assets\#Game\Scripts\AI\GOAP\FSM\IGoapFSMState.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ProjetoIA.GOAP.IGoapWorldKnowledge">
+    <Position X="14.5" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\#Game\Scripts\AI\GOAP\WorldKnowledge\IGoapWorldKnowledge.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ProjetoIA.GOAP.IReadOnlyWorldKnowledge" Collapsed="true">
+    <Position X="14.25" Y="2" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\#Game\Scripts\AI\GOAP\WorldKnowledge\IReadOnlyWorldKnowledge.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="ProjetoIA.GOAP.GoapFSMStates">
+    <Position X="11" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAIAAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>Assets\#Game\Scripts\AI\GOAP\FSM\GoapFSM.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ProjetoIA.GOAP.PlayerHealthStatus" Collapsed="true">
+    <Position X="15.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAAAAAEAAAAAAAAAAgAA=</HashCode>
+      <FileName>Assets\#Game\Scripts\AI\GOAP\WorldKnowledge\WordInformation.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ProjetoIA.GOAP.EnemyAlertStatus" Collapsed="true">
+    <Position X="15.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAAAAAAIAAI=</HashCode>
+      <FileName>Assets\#Game\Scripts\AI\GOAP\WorldKnowledge\WordInformation.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ProjetoIA.GOAP.eWorldInfo" Collapsed="true">
+    <Position X="15.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAAAAAACAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\#Game\Scripts\AI\GOAP\WorldKnowledge\WordInformation.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ProjetoIA.GOAP.bWorldInfo" Collapsed="true">
+    <Position X="15.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAABCAEAAAAAAAAAAAABAAAAAAABAQAABAAAE=</HashCode>
+      <FileName>Assets\#Game\Scripts\AI\GOAP\WorldKnowledge\WordInformation.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ProjetoIA.GOAP.fWorldInfo" Collapsed="true">
+    <Position X="15.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\#Game\Scripts\AI\GOAP\WorldKnowledge\WordInformation.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
