@@ -19,6 +19,5 @@ namespace ProjetoIA
             pos.z += moveDir.y * linearSpeed * Time.deltaTime;
             SetXZPos(pos);
         }
-
     }
 }

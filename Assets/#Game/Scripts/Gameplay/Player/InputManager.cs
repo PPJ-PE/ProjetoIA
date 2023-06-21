@@ -45,9 +45,11 @@ namespace ProjetoIA
             if (Mathf.Abs(normalizedMousePos.x) > 0.45f || Mathf.Abs(normalizedMousePos.y) > 0.45f)
             {
                 if (Mathf.Abs(normalizedMousePos.x) > Mathf.Abs(normalizedMousePos.y))
-                    normalizedMousePos = normalizedMousePos.normalized * (Mathf.Abs(normalizedMousePos.x) - 0.45f) * 10.0f;
+                    normalizedMousePos = normalizedMousePos.normalized * 
+                                            (Mathf.Abs(normalizedMousePos.x) - 0.45f) * 
+                                            20.0f;
                 else
-                    normalizedMousePos = normalizedMousePos.normalized * (Mathf.Abs(normalizedMousePos.y) - 0.45f) * 10.0f;
+                    normalizedMousePos = normalizedMousePos.normalized * (Mathf.Abs(normalizedMousePos.y) - 0.45f) * 20.0f;
                 MoveCamera(normalizedMousePos);
             }
             else if(inputAxis.magnitude > 0.005f)
@@ -57,7 +59,7 @@ namespace ProjetoIA
         }
         private void MoveCamera(Vector3 mousePos)
         {
-            mainCameraCtrl.Move(mousePos);
+            mainCameraCtrl.Move(mousePos.normalized);
         }
 
         private void MouseClick()
