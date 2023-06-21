@@ -1,5 +1,8 @@
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
@@ -7,17 +10,43 @@ namespace ProjetoIA.GOAP
 {
     public class GoapPlanner
     {
-        private class PlanNode
+        /// <summary>
+        /// Encapsula a acao com informacoes relevantes para o grafo
+        /// </summary>
+        private class ActionNode
         {
-            public List<PlanNode> connections; // This node is solved by these other nodes
+            public List<ActionNode> Connections; // This node is solved by these other nodes
             public GoapAction Action { get; private set; }
 
-            public PlanNode currentComingFrom;
-            public int currentComingFromCost;
-
-            public PlanNode(GoapAction action)
+            public ActionNode(GoapAction action)
             {
                 Action = action;
+            }
+        }
+        /// <summary>
+        /// Encapsula o action node com informacoes relevantes para o plano atual
+        /// </summary>
+        private class PlanNode
+        {
+            public int gNCost;
+            public int hNCost;
+
+            public List<ActionNode> Connections { get => Node.Connections; } 
+            public ActionNode Node { get; private set; }
+            public PlanNode Parent { get; private set; }
+            public bool IsStartNode { get => Parent == null; }
+            public int fNCost { get => gNCost + hNCost; }
+
+            public PlanNode(ActionNode node, GoapGoal goal, PlanNode parent = null)
+            {
+                if (node == null) { Debug.LogError("PlanNode Nulo!!"); return; }
+
+                Node = node;
+
+                gNCost = node.Action.GetActionCost();
+                if (parent != null) gNCost += parent.gNCost;
+
+                hNCost = CalcDiferences(node.Action.GetExpectedEffects(), goal.GetObjective());
             }
 
             //public void SortNodes()
@@ -25,7 +54,7 @@ namespace ProjetoIA.GOAP
             //    connections.Sort((x, y) => x.Action.GetActionCost().CompareTo(y.Action.GetActionCost())); // Sort by cost (min -> max)
             //}
         }
-        private PlanNode[] graph;
+        private ActionNode[] graph;
 
         public GoapPlanner(GoapAction[] allActions)
         {
@@ -35,54 +64,99 @@ namespace ProjetoIA.GOAP
         // Create all nodes, Calculate all nodes 'solve-by' relations
         private void BuildGraph(GoapAction[] allActions)
         {
-            graph = new PlanNode[allActions.Length];
+            graph = new ActionNode[allActions.Length];
 
-            for (int i = 0; i < allActions.Length; i++) graph[i] = new PlanNode(allActions[i]);
-            for (int i = 0; i < allActions.Length; i++) // i is solved by j
+            for (int i = 0; i < allActions.Length; i++) graph[i] = new ActionNode(allActions[i]);
+            for (int i = 0; i < allActions.Length; i++) // j is solved by i
             {
                 for (int j = 0; j < allActions.Length; j++)
                 {
                     if (i == j) continue;
-                    if (allActions[i].IsValid(allActions[j].GetExpectedEffects())) graph[i].connections.Add(graph[j]);
+                    if (allActions[i].IsValid(allActions[j].GetExpectedEffects())) graph[j].Connections.Add(graph[i]); // j is solved by i
                 }
             }
         }
 
         public Queue<GoapAction> Plan(IGoapWorldKnowledge worldKnowledge, GoapGoal goal)
         {
-            List<PlanNode> goalNodes = new List<PlanNode>();
-            foreach (PlanNode node in graph)
+            return AStar(worldKnowledge, goal); 
+        }
+
+        private Queue<GoapAction> AStar(IGoapWorldKnowledge currentWorldState, GoapGoal goal)
+        {
+            Queue<GoapAction> plan = new Queue<GoapAction>();
+            List<PlanNode> frontier = new List<PlanNode>();
+            List<PlanNode> visitedNodes = new List<PlanNode>();
+            PlanNode expansionNode = null;
+            bool planNotFound = true;
+
+            foreach (ActionNode node in graph)
             {
-                if (CompareDictValues(node.Action.GetExpectedEffects(), goal.GetObjective()))
+                if (node.Action.IsValid(currentWorldState))
                 {
-                    goalNodes.Add(node);
+                    if (CalcDiferences(node.Action.GetExpectedEffects(), goal.GetObjective()) == 0)
+                    {
+                        return new Queue<GoapAction>(new GoapAction[] { node.Action });
+                    }
+                    else
+                    {
+                        expansionNode = new PlanNode(node, goal);
+                        visitedNodes.Add(expansionNode);
+                        foreach (ActionNode connection in expansionNode.Connections)
+                        {
+                            frontier.Add(new PlanNode(connection, goal, expansionNode));
+                        }
+                    }
                 }
             }
-            //TODO fix Dijkstra
-            List<PlanNode> inversePlan = new List<PlanNode>(graph); //Dijkstra(goalNodes, worldKnowledge);
 
-            Queue<GoapAction> planQueue = new Queue<GoapAction>();
-            for (int i = inversePlan.Count - 1; i >= 0; i--) planQueue.Enqueue(inversePlan[i].Action);
+            while (frontier.Count > 0 && planNotFound)
+            {
+                expansionNode = frontier[0];
+                for(int i = 0; i < frontier.Count; i++)
+                {
+                    if (CalcDiferences(frontier[i].Node.Action.GetExpectedEffects(), goal.GetObjective()) == 0)
+                    {
+                        if (!planNotFound && frontier[i].fNCost < expansionNode.fNCost) expansionNode = frontier[i];
+                        else
+                        {
+                            planNotFound = false;
+                            expansionNode = frontier[i];
+                        }
+                    }
+                    else if (planNotFound && frontier[i].fNCost < expansionNode.fNCost) expansionNode = frontier[i];
+                }
 
-            return planQueue; 
-        }
+                visitedNodes.Add(expansionNode);
+                frontier.Remove(expansionNode);
 
-        private List<PlanNode> AStar(List<PlanNode> goalNodes, IGoapWorldKnowledge worldKnowledge)
-        {
-            List<PlanNode> plan = new List<PlanNode>();
+                if (planNotFound)
+                {
+                    foreach (ActionNode connection in expansionNode.Connections)
+                    {
+                        frontier.Add(new PlanNode(connection, goal, expansionNode));
+                    }
+                }
+            }
 
+            if (planNotFound) { Debug.LogWarning("Plan not found!"); return null; }
 
-            return plan;
+            while (expansionNode != null)
+            {
+                plan.Enqueue(expansionNode.Node.Action);
+                expansionNode = expansionNode.Parent;
+            }
+            return new Queue<GoapAction>(plan.Reverse());
         }
         //TODO - Wont work for 1 value
-        private List<PlanNode> Dijkstra(List<PlanNode> goalNodes, IGoapWorldKnowledge worldKnowledge)
+        private List<ActionNode> Dijkstra(List<ActionNode> goalNodes, IGoapWorldKnowledge worldKnowledge)
         {
-            List<PlanNode> plan = new List<PlanNode>();
+            List<ActionNode> plan = new List<ActionNode>();
 
             if (goalNodes.Count == 0) return plan;
 
-            PlanNode lastNode = null;
-            List<PlanNode> currentNodes = goalNodes;
+            ActionNode lastNode = null;
+            List<ActionNode> currentNodes = goalNodes;
             List<int> lowestCostNodes = new List<int>();
             int lowestCostNode = 0;
             int testCost; // 
@@ -97,13 +171,13 @@ namespace ProjetoIA.GOAP
                     lowestCostNodes.Add(0);
                     if (currentNodes[i].Action.IsValid(lastNode == null ?  worldKnowledge : lastNode.Action.GetExpectedEffects()))
                     {
-                        lowestCostNodes[i] = currentNodes[i].currentComingFromCost + currentNodes[i].Action.GetActionCost();
+                        lowestCostNodes[i] = currentNodes[i].gNCost + currentNodes[i].Action.GetActionCost();
                         continue;
                     }
                     testCost = 0;
-                    foreach (PlanNode test in currentNodes[i].connections)
+                    foreach (ActionNode test in currentNodes[i].Connections)
                     {
-                        testCost = currentNodes[i].currentComingFromCost + currentNodes[i].Action.GetActionCost() + test.Action.GetActionCost();
+                        testCost = currentNodes[i].gNCost + currentNodes[i].Action.GetActionCost() + test.Action.GetActionCost();
                         if (lowestCostNodes[i] == 0 || lowestCostNodes[i] > testCost)
                         {
                             //
@@ -120,7 +194,7 @@ namespace ProjetoIA.GOAP
 
                 lastWorldKnowledge = lastNode.Action.GetExpectedEffects();
                 lastNode = currentNodes[lowestCostNode];
-                currentNodes = lastNode.connections;
+                currentNodes = lastNode.Connections;
                 lowestCostNodes.Clear();
                 lowestCostNode = 0;
 
@@ -136,35 +210,36 @@ namespace ProjetoIA.GOAP
 
             return plan; // Inverted
         }
-        private static bool CompareDictValues(IReadOnlyWorldKnowledge baseDict, IReadOnlyWorldKnowledge toCompare)
+        private static int CalcDiferences(IReadOnlyWorldKnowledge baseDict, IReadOnlyWorldKnowledge goal)
         {
+            int remainingStates = 0;
             bool bValue;
             float fValue;
             int eValue;
 
-            foreach (KeyValuePair<bWorldInfo, bool> kvp in (IReadOnlyDictionary<bWorldInfo, bool>)baseDict)
+            foreach (KeyValuePair<bWorldInfo, bool> kvp in (IReadOnlyDictionary<bWorldInfo, bool>)goal)
             {
-                if (!(toCompare.TryGetValue(kvp.Key, out bValue) && bValue == kvp.Value))
+                if (!(baseDict.TryGetValue(kvp.Key, out bValue) && bValue == kvp.Value))
                 {
-                    return false;
+                    remainingStates++;
                 }
             }
-            foreach (KeyValuePair<eWorldInfo, int> kvp in (IReadOnlyDictionary<eWorldInfo, int>)baseDict)
+            foreach (KeyValuePair<eWorldInfo, int> kvp in (IReadOnlyDictionary<eWorldInfo, int>)goal)
             {
-                if (!(toCompare.TryGetValue(kvp.Key, out eValue) && eValue == kvp.Value))
+                if (!(baseDict.TryGetValue(kvp.Key, out eValue) && eValue == kvp.Value))
                 {
-                    return false;
+                    remainingStates++;
                 }
             }
-            foreach (KeyValuePair<fWorldInfo, float> kvp in (IReadOnlyDictionary<fWorldInfo, float>)baseDict)
+            foreach (KeyValuePair<fWorldInfo, float> kvp in (IReadOnlyDictionary<fWorldInfo, float>)goal)
             {
-                if (!(toCompare.TryGetValue(kvp.Key, out fValue) && fValue == kvp.Value))
+                if (!(baseDict.TryGetValue(kvp.Key, out fValue) && fValue == kvp.Value))
                 {
-                    return false;
+                    remainingStates++;
                 }
             }
 
-            return true;
+            return remainingStates;
         }
     }
 }
