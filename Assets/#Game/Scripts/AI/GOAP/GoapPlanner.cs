@@ -149,6 +149,7 @@ namespace ProjetoIA.GOAP
             return new Queue<GoapAction>(plan.Reverse());
         }
         //TODO - Wont work for 1 value
+        /*
         private List<ActionNode> Dijkstra(List<ActionNode> goalNodes, IGoapWorldKnowledge worldKnowledge)
         {
             List<ActionNode> plan = new List<ActionNode>();
@@ -171,7 +172,7 @@ namespace ProjetoIA.GOAP
                     lowestCostNodes.Add(0);
                     if (currentNodes[i].Action.IsValid(lastNode == null ?  worldKnowledge : lastNode.Action.GetExpectedEffects()))
                     {
-                        lowestCostNodes[i] = currentNodes[i].gNCost + currentNodes[i].Action.GetActionCost();
+                        lowestCostNodes[i] = currentNodes[i].gNCost. + currentNodes[i].Action.GetActionCost();
                         continue;
                     }
                     testCost = 0;
@@ -210,6 +211,7 @@ namespace ProjetoIA.GOAP
 
             return plan; // Inverted
         }
+        */
         private static int CalcDiferences(IReadOnlyWorldKnowledge baseDict, IReadOnlyWorldKnowledge goal)
         {
             int remainingStates = 0;
