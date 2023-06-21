@@ -4,6 +4,7 @@ using System.Security;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.WSA;
 
 namespace ProjetoIA
 {
@@ -38,6 +39,9 @@ namespace ProjetoIA
         [SerializeField]
         private Image fillImage;
 
+        [SerializeField]
+        private GameObject[] enemies;
+
         [Space(10)]
 
         [Header("Object Manipulation")]
@@ -71,12 +75,25 @@ namespace ProjetoIA
         {
             currentState = AlertState.Normal;
             radioShine.SetActive(false);
+
+            enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+            float alertLevelAmountHighest = 0;
+            foreach (GameObject enemy in enemies)
+            {
+                var alertLevelAmount = enemy.GetComponent<IAlert>().GetAlertLevel();
+                if (alertLevelAmount > alertLevelAmountHighest)
+                {
+                    alertLevelAmountHighest = alertLevelAmount;
+                    fillAmount = alertLevelAmount;
+                }
+            }
         }
 
         // Update is called once per frame
         void Update()
         {
-            // debug
+            #region DEBUG
             if (Input.GetKeyDown(KeyCode.Z))
             {
                 fillAmount += 0.1f;
@@ -84,6 +101,18 @@ namespace ProjetoIA
             if (Input.GetKeyDown(KeyCode.X))
             {
                 fillAmount -= 0.1f;
+            }
+            #endregion
+
+            float alertLevelAmountHighest = 0;
+            foreach (GameObject enemy in enemies)
+            {
+                var alertLevelAmount = enemy.GetComponent<IAlert>().GetAlertLevel();
+                if (alertLevelAmount > alertLevelAmountHighest)
+                {
+                    alertLevelAmountHighest = alertLevelAmount;
+                    fillAmount = alertLevelAmount;
+                }
             }
 
             // Altera a imagem do fill dependendo do quão cheio está
