@@ -7,7 +7,7 @@ using UnityEngine.AI;
 
 namespace ProjetoIA.GOAP
 {
-    public abstract class GoapAgent : MonoBehaviour
+    public abstract class GoapAgent : MonoBehaviour, IGoapSenseObserver
     {
         [SerializeField, ReadOnly] protected GoapAction[] actions;
 
@@ -55,5 +55,6 @@ namespace ProjetoIA.GOAP
         protected abstract void IdleState();
         protected abstract void MovingToState();
         protected abstract void PerformingAction();
+        public abstract void OnWorldStateChange(IReadOnlyWorldKnowledge changes);
     }
 }

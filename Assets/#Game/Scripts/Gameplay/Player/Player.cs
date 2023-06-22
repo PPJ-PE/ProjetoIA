@@ -94,5 +94,10 @@ namespace ProjetoIA
         {
             throw new System.NotImplementedException();
         }
+
+        public override void OnWorldStateChange(IReadOnlyWorldKnowledge changes)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
