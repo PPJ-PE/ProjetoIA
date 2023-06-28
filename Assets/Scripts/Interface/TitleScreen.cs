@@ -18,6 +18,8 @@ namespace ProjetoAI
         [SerializeField]
         private RectTransform creditsGroup;
         [SerializeField]
+        private RectTransform logo;
+        [SerializeField]
         private CanvasGroup mainGroupCanvasGroup;
         [SerializeField]
         private CanvasGroup optionsGroupCanvasGroup;
@@ -48,7 +50,11 @@ namespace ProjetoAI
         [SerializeField]
         private RectTransform[] selections;
         [SerializeField]
+        private RectTransform[] selectionsOptions;
+        [SerializeField]
         private Image[] selectionsImages;
+        [SerializeField]
+        private Image[] selectionsImagesOptions;
         [SerializeField]
         private TextMeshProUGUI timeText;
 
@@ -88,7 +94,7 @@ namespace ProjetoAI
         private float sfxValue = 0;
 
         [SerializeField]
-        private string[] fullScreenNames = { "Windowed", "Borderless Fullscreen", "Exclusive Fullscreen" };
+        private string[] fullScreenNames = { "Off", "Borderless", "Exclusive" };
 
         // Não é possivel serializar arrays nem listas multi-dimensionais
         private int[,] resolutions = {
@@ -134,6 +140,13 @@ namespace ProjetoAI
 
             fadeOutCoroutine = StartCoroutine(EmptyCoroutine());
             fadeInCoroutine = StartCoroutine(EmptyCoroutine());
+
+            // Posiciona a escala e posição do grupo principal para simular abertura de janela
+
+            mainGroup.anchoredPosition = new Vector2(916, -500);
+            mainGroup.localScale = new Vector2(0, 0);
+
+            StartCoroutine(StartupAnimation(mainGroup, mainGroupCanvasGroup, 0.25f));
         }
 
         // Update is called once per frame
@@ -217,10 +230,24 @@ namespace ProjetoAI
             #region Menu Options
             if (optionsGroupInteract == true)
             {
+                for (int i = 0; i < 5; i++)
+                {
+                    if (optionsGroupSelectionIndex == i)
+                    {
+                        selectionsOptions[i].anchoredPosition = Vector2.Lerp(selectionsOptions[i].anchoredPosition, new Vector2(-660, selectionsOptions[i].anchoredPosition.y), Time.deltaTime * positioningSpeed);
+                        selectionsImagesOptions[i].color = Color.Lerp(selectionsImagesOptions[i].color, new Color(1, 1, 1, 1), Time.deltaTime * coloringSpeed);
+                    }
+                    else
+                    {
+                        selectionsOptions[i].anchoredPosition = Vector2.Lerp(selectionsOptions[i].anchoredPosition, new Vector2(-760, selectionsOptions[i].anchoredPosition.y), Time.deltaTime * positioningSpeed);
+                        selectionsImagesOptions[i].color = Color.Lerp(selectionsImagesOptions[i].color, new Color(0.8f, 0.8f, 0.8f, 0.75f), Time.deltaTime * coloringSpeed);
+                    }
+                }
+
                 if (Input.GetButtonDown("Vertical"))
                 {
                     audioSource.PlayOneShot(buttonMove);
-                    optionsGroupSelectionIndex = (int)Wrap(optionsGroupSelectionIndex - (int)Input.GetAxisRaw("Vertical"), 0, 6);
+                    optionsGroupSelectionIndex = (int)Wrap(optionsGroupSelectionIndex - (int)Input.GetAxisRaw("Vertical"), 0, 5);
                 }
 
                 if (Input.GetButtonDown("Horizontal"))
@@ -231,24 +258,28 @@ namespace ProjetoAI
                         case 0: // Fullscreen
 
                             fullscreenValue += (int)Input.GetAxisRaw("Horizontal");
+                            fullscreenValue = (int)Wrap(fullscreenValue, 0, 3);
                             fullscreenText.text = fullScreenNames[fullscreenValue];
                             break;
 
                         case 1: // Resolution
 
                             resolutionValue += (int)Input.GetAxisRaw("Horizontal");
+                            resolutionValue = (int)Wrap(resolutionValue, 0, 6);
                             resolutionText.text = resolutions[resolutionValue, 0] + " x " + resolutions[resolutionValue, 1];
                             break;
 
                         case 2: // Music Volume
 
-                            bgmValue += (int)Input.GetAxisRaw("Horizontal") * 0.1f;
+                            bgmValue += Input.GetAxisRaw("Horizontal") * 0.1f;
+                            bgmValue = Wrap(bgmValue, 0 * 0.1f, 100 * 0.1f);
                             musicText.text = (int)(bgmValue * 100) + "%";
                             break;
 
                         case 3: // Sound Volume
 
-                            sfxValue += (int)Input.GetAxisRaw("Horizontal") * 0.1f;
+                            sfxValue += Input.GetAxisRaw("Horizontal") * 0.1f;
+                            sfxValue = Wrap(sfxValue, 0 * 0.1f, 100 * 0.1f);
                             soundText.text = (int)(sfxValue * 100) + "%";
                             break;
 
@@ -308,6 +339,30 @@ namespace ProjetoAI
         private IEnumerator EmptyCoroutine()
         {
             yield return null;
+        }
+
+        private IEnumerator StartupAnimation(RectTransform group, CanvasGroup canvasGroup, float time)
+        {
+            audioSource.PlayOneShot(buttonConfirm);
+
+            Vector2 startingScale = new Vector2(0, 0);
+            Vector2 finalScale = new Vector2(1, 1);
+            Vector2 startingPos = new Vector2(-916, -500);
+            Vector2 finalPos = new Vector2(0, 0);
+            Vector2 startingPosLogo = new Vector2(0, 0);
+            Vector2 finalPosLogo = new Vector2(415, 40);
+
+            float elapsedTime = 0;
+
+            while (elapsedTime < time)
+            {
+                group.localScale = Vector2.Lerp(startingScale, finalScale, (elapsedTime / time));
+                group.anchoredPosition = Vector2.Lerp(startingPos, finalPos, (elapsedTime / time));
+                logo.anchoredPosition = Vector2.Lerp(startingPosLogo, finalPosLogo, (elapsedTime / time));
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            mainGroupInteract = true;
         }
 
         private IEnumerator FadeInGroup(Transform group, CanvasGroup canvasGroup, bool groupInteract, System.Action<bool> setBool)
