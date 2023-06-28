@@ -30,7 +30,7 @@ public class GranadaPosiçao : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // if (tempoParcial <= tempoTotal)
+        if (Input.GetKey(KeyCode.W))
         {
             granada.transform.Translate(0, vetorVelocidade.y * Time.deltaTime, vetorVelocidade.z * Time.deltaTime);// = posIniGranada + new Vector3(0, 0, vetorVelocidade.z * Time.deltaTime);
             vetorVelocidade.y -= 9.81f * Time.deltaTime;
