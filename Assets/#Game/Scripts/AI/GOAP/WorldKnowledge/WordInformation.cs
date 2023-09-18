@@ -39,11 +39,13 @@ namespace ProjetoIA.GOAP
         //Common:
         Crouching,                  //bool
         IsFiring,                   //bool
-
+        //Enemy:
+        EnemyTargetKill
     }
     public enum fWorldInfo
     {
         //Player:
         PlayerDistance = 0,         //float
+        EnemyTargetDistance
     }
 }
